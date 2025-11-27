@@ -1,10 +1,5 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Phone-style Keypad — Numeric Keys Color</title>
-<style>
+
+
 :root{
   --bg: #000000;
 
@@ -27,12 +22,8 @@
   --letters-spacing: 1.6px;
 
   /* key colors */
-  --key-fill: #343434;      /* default non-numeric key color (e.g. *, # if you want) */
+  --key-fill: #343434;
   --key-pressed: #7c7c7c;
-
-  /* numeric keys color (change this to change 1,2,3,4,5... buttons) */
-  --num-key-fill: #0a84ff;  /* <- edit this value to change numeric keys color */
-  --num-key-pressed: #0666c2;
 
   /* fine-tune the 0 key */
   --zero-digit-nudge: 0px; /* nudge the '0' up/down for optical centering (negative = up) */
@@ -135,23 +126,13 @@ html,body{
 
   transition:
     background-color var(--press-fade-ms) linear,
-    color var(--press-fade-ms) linear,
-    transform 120ms ease;
-  will-change: background-color, color, transform;
+    color var(--press-fade-ms) linear;
+  will-change: background-color, color;
 }
 
-/* numeric keys override */
-.key.numeric{
-  background-color: var(--num-key-fill);
-}
-.key.numeric.pressed,
-.key.numeric:active {
-  background-color: var(--num-key-pressed);
-}
-
-/* pressed fallback for non-numeric */
+/* pressed */
 .key.pressed,
-.key:active { background-color: var(--key-pressed); transform: translateY(1px); }
+.key:active { background-color: var(--key-pressed); }
 
 /* main digit text */
 .digit{
@@ -190,14 +171,17 @@ html,body{
 .key:active .letters { color:#FFFFFF; }
 
 /* --- 0 key tweaks: center both 0 and + and tighten vertical spacing --- */
+/* ensure the 0 key stacks vertically and centers both elements exactly */
 .key[data-value="0"]{
   display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  gap: 0px;
+  gap: 0px; /* exact control via margin on .letters */
   padding: 0;
 }
+
+/* nudge the '0' digit so it is optically centered inside the circle */
 .key[data-value="0"] .digit{
   transform: translateY(var(--zero-digit-nudge));
   font-size: var(--digit-size);
@@ -205,20 +189,23 @@ html,body{
   margin: 0;
   padding: 0;
 }
+
+/* '+' styling: balanced weight and tightened gap */
 .key[data-value="0"] .letters{
   display:block;
-  font-weight: 700;
-  font-size: 15px;
+  font-weight: 700;            /* balanced weight */
+  font-size: 15px;             /* kept as requested */
   line-height: 1;
   letter-spacing: 0;
   color: var(--letters-color);
-  margin-top: var(--zero-plus-gap);
+  margin-top: var(--zero-plus-gap); /* tightened by 2px (negative) */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   transition: color var(--press-fade-ms) linear;
 }
 
 /* injected svg sizing for asterisk & hash so they match font-size */
+/* ASTERISK */
 .digit.digit-asterisk svg {
   width: 1em !important;
   height: 1em !important;
@@ -228,6 +215,8 @@ html,body{
   transform: scale(1.60) translateY(3px) !important;
   color: currentColor;
 }
+
+/* HASH tuning */
 .digit.digit-hash svg {
   width: 1em !important;
   height: 1em !important;
@@ -237,11 +226,15 @@ html,body{
   transform: scale(0.95) translateY(0) !important;
   color: currentColor;
 }
+
+/* ensure injected svg shapes adopt currentColor and remove strokes */
 .digit.digit-asterisk svg * ,
 .digit.digit-hash svg * {
   fill: currentColor !important;
   stroke: none !important;
 }
+
+/* hide possible background rects or bg elements defensively */
 .digit.digit-asterisk svg rect,
 .digit.digit-hash svg rect,
 .digit.digit-asterisk svg [id*="bg"],
@@ -272,8 +265,7 @@ html,body{
   width:68px;
   height:68px;
   border-radius:999px;
-  /* call button color (kept from previous change) */
-  background:#141414;
+  background:#2fd55b;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -334,209 +326,3 @@ html,body{
   .digit.digit-hash svg { transform: scale(0.92) translateY(0) !important; }
   .key[data-value="0"] .letters { font-size: 14px; margin-top: -2px; }
 }
-</style>
-</head>
-<body>
-<div class="app" role="application" aria-label="Phone keypad demo">
-  <div class="display" id="display" aria-live="polite" aria-atomic="true"> </div>
-
-  <div class="keypad-wrap">
-    <div class="keys-grid" role="grid" aria-label="Keypad">
-      <!-- row 1 -->
-      <button class="key numeric" data-value="1" aria-label="1" role="gridcell">
-        <span class="digit">1</span>
-        <span class="letters"></span>
-      </button>
-      <button class="key numeric" data-value="2" aria-label="2" role="gridcell">
-        <span class="digit">2</span>
-        <span class="letters">ABC</span>
-      </button>
-      <button class="key numeric" data-value="3" aria-label="3" role="gridcell">
-        <span class="digit">3</span>
-        <span class="letters">DEF</span>
-      </button>
-
-      <!-- row 2 -->
-      <button class="key numeric" data-value="4" aria-label="4" role="gridcell">
-        <span class="digit">4</span>
-        <span class="letters">GHI</span>
-      </button>
-      <button class="key numeric" data-value="5" aria-label="5" role="gridcell">
-        <span class="digit">5</span>
-        <span class="letters">JKL</span>
-      </button>
-      <button class="key numeric" data-value="6" aria-label="6" role="gridcell">
-        <span class="digit">6</span>
-        <span class="letters">MNO</span>
-      </button>
-
-      <!-- row 3 -->
-      <button class="key numeric" data-value="7" aria-label="7" role="gridcell">
-        <span class="digit">7</span>
-        <span class="letters">PQRS</span>
-      </button>
-      <button class="key numeric" data-value="8" aria-label="8" role="gridcell">
-        <span class="digit">8</span>
-        <span class="letters">TUV</span>
-      </button>
-      <button class="key numeric" data-value="9" aria-label="9" role="gridcell">
-        <span class="digit">9</span>
-        <span class="letters">WXYZ</span>
-      </button>
-
-      <!-- row 4 -->
-      <button class="key" data-value="*" aria-label="asterisk" role="gridcell">
-        <span class="digit digit-asterisk">✱</span>
-        <span class="letters"></span>
-      </button>
-      <button class="key numeric" data-value="0" aria-label="0" role="gridcell">
-        <span class="digit">0</span>
-        <span class="letters">+</span>
-      </button>
-      <button class="key" data-value="#" aria-label="hash" role="gridcell">
-        <span class="digit digit-hash">#</span>
-        <span class="letters"></span>
-      </button>
-    </div>
-
-    <div class="call-row">
-      <button class="call-button" id="callBtn" aria-label="Call">
-        <!-- simple phone icon -->
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.06-.24 11.36 11.36 0 003.56.57 1 1 0 011 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1 11.36 11.36 0 00.57 3.56 1 1 0 01-.24 1.06l-2.2 2.2z"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <nav class="bottom-nav" aria-hidden="true">
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v6c0 5 5 9 10 9s10-4 10-9V7l-10-5z"/></svg>
-      <span>Home</span>
-    </div>
-    <div class="nav-item active">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v6c0 5 5 9 10 9s10-4 10-9V7l-10-5z"/></svg>
-      <span>Dial</span>
-    </div>
-    <div class="nav-item">
-      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v6c0 5 5 9 10 9s10-4 10-9V7l-10-5z"/></svg>
-      <span>Contacts</span>
-    </div>
-  </nav>
-</div>
-
-<script>
-(function(){
-  const displayEl = document.getElementById('display');
-  const keys = Array.from(document.querySelectorAll('.key'));
-  const callBtn = document.getElementById('callBtn');
-
-  let buffer = '';
-  let hideTimer = null;
-
-  function updateDisplay(showImmediately = true){
-    displayEl.textContent = buffer || '';
-    if (buffer) {
-      displayEl.style.opacity = '1';
-      // reset hide timer
-      if (hideTimer) clearTimeout(hideTimer);
-      hideTimer = setTimeout(() => {
-        displayEl.style.opacity = '0';
-      }, 2100);
-    } else {
-      // nothing typed -> hide quickly
-      displayEl.style.opacity = '0';
-    }
-  }
-
-  function flashKey(keyEl){
-    keyEl.classList.add('pressed');
-    // short press animation
-    setTimeout(()=> keyEl.classList.remove('pressed'), 180);
-  }
-
-  keys.forEach(key => {
-    const val = key.getAttribute('data-value');
-    key.addEventListener('pointerdown', e => {
-      // visual pressed
-      key.classList.add('pressed');
-      // prevent ghost mouse events
-      e.preventDefault();
-    });
-    key.addEventListener('pointerup', e => {
-      key.classList.remove('pressed');
-    });
-    key.addEventListener('click', e => {
-      flashKey(key);
-      // handle value
-      if (val === '*' || val === '#') {
-        buffer += val;
-      } else {
-        buffer += val;
-      }
-      // limit to reasonable length
-      if (buffer.length > 32) buffer = buffer.slice(0,32);
-      updateDisplay();
-    });
-
-    // keyboard accessibility: Enter/Space
-    key.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        key.click();
-      }
-    });
-  });
-
-  // long-press on call as deletion for demo
-  let callDown = false, callHoldTimer = null;
-  callBtn.addEventListener('pointerdown', e => {
-    callDown = true;
-    callBtn.classList.add('pressed');
-    callHoldTimer = setTimeout(() => {
-      // long press -> clear buffer
-      buffer = '';
-      updateDisplay();
-      callBtn.classList.remove('pressed');
-      callDown = false;
-    }, 700);
-  });
-  callBtn.addEventListener('pointerup', e => {
-    if (callHoldTimer) clearTimeout(callHoldTimer);
-    callBtn.classList.remove('pressed');
-    if (callDown) {
-      // short press -> "call" (for demo we'll just console)
-      if (buffer.length) {
-        console.log('Calling', buffer);
-        // simple feedback
-        displayEl.textContent = 'Calling ' + buffer;
-        displayEl.style.opacity = '1';
-        setTimeout(()=> {
-          buffer = '';
-          updateDisplay();
-        }, 1200);
-      } else {
-        displayEl.textContent = 'No number';
-        displayEl.style.opacity = '1';
-        setTimeout(()=> updateDisplay(), 1200);
-      }
-    }
-    callDown = false;
-  });
-
-  // initial hide
-  updateDisplay(false);
-
-  // allow backspace with Backspace key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Backspace') {
-      buffer = buffer.slice(0, -1);
-      updateDisplay();
-    }
-  });
-
-})();
-</script>
-</body>
-</html>
-
