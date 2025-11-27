@@ -1,0 +1,152 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+  <title>Phone</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-180.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon-192.png">
+
+
+
+  <!-- preload replacement background -->
+  <link rel="preload" as="image" href="numpad.png">
+
+  <link rel="stylesheet" href="styles.css">
+<!-- Inside <head> … -->
+<link rel="manifest" href="manifest.json">
+
+
+
+</head>
+<body>
+  <div class="app lockscreen" id="app" aria-hidden="false">
+    <div class="display" id="display" aria-live="polite" aria-atomic="true"></div>
+
+    <main class="keypad-wrap" role="application" aria-label="Dial pad">
+      <div class="keys-grid" id="keysGrid" aria-hidden="false">
+        <!-- Row 1 -->
+        <button class="key" data-value="1" aria-label="1"><span class="digit">1</span><span class="letters"></span></button>
+        <button class="key" data-value="2" aria-label="2"><span class="digit">2</span><span class="letters">ABC</span></button>
+        <button class="key" data-value="3" aria-label="3"><span class="digit">3</span><span class="letters">DEF</span></button>
+
+        <!-- Row 2 -->
+        <button class="key" data-value="4" aria-label="4"><span class="digit">4</span><span class="letters">GHI</span></button>
+        <button class="key" data-value="5" aria-label="5"><span class="digit">5</span><span class="letters">JKL</span></button>
+        <button class="key" data-value="6" aria-label="6"><span class="digit">6</span><span class="letters">MNO</span></button>
+
+        <!-- Row 3 -->
+        <button class="key" data-value="7" aria-label="7"><span class="digit">7</span><span class="letters">PQRS</span></button>
+        <button class="key" data-value="8" aria-label="8"><span class="digit">8</span><span class="letters">TUV</span></button>
+        <button class="key" data-value="9" aria-label="9"><span class="digit">9</span><span class="letters">WXYZ</span></button>
+
+        <!-- Row 4 -->
+        <button class="key" data-value="*" aria-label="star"><span class="digit">*</span><span class="letters"></span></button>
+        <button class="key" data-value="0" aria-label="0"><span class="digit">0</span><span class="letters">+</span></button>
+        
+      </div>
+
+      <div class="call-row">
+        <button id="callBtn" class="call-button" aria-label="Call" title="Call">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.02-.24c1.12.37 2.33.57 3.57.57a1 
+                     1 0 011 1V20a1 1 0 01-1 1C10.07 21 3 13.93 3 5a1 1 0 011-1h3.5a1 1 0 011 1c0 1.24.2 2.45.57 
+                     3.57a1 1 0 01-.25 1.02l-2.2 2.2z"/>
+          </svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- bottom nav (visual only) -->
+    <nav class="bottom-nav" aria-hidden="true">
+      <div class="nav-item favorites" role="button" aria-label="Favorites">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 17.3L18.18 21l-1.64-7.03L22 9.24l-7.19-.62L12 2 9.19 8.62 2 9.24l5.46 4.73L5.82 21z"/></svg>
+        <span>Favorites</span>
+      </div>
+
+      <div class="nav-item recents" role="button" aria-label="Recents">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor" /><line x1="12" y1="12" x2="12" y2="6" stroke="#000" stroke-width="1.8" stroke-linecap="round"/><line x1="12" y1="12" x2="6" y2="12" stroke="#000" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>Recents</span>
+      </div>
+
+      <div class="nav-item contacts" role="button" aria-label="Contacts">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor" /><circle cx="12" cy="9.0" r="3.4" fill="#000"/><path fill="#000" d="M4.8 17.6c0-2.9 4.2-5.0 7.2-5.0s7.2 2.1 7.2 5.0V19H4.8v-1.4z" /></svg>
+        <span>Contacts</span>
+      </div>
+
+      <div class="nav-item active keypad" role="button" aria-label="Keypad">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="1.8" fill="currentColor"/><circle cx="12" cy="6" r="1.8" fill="currentColor"/><circle cx="18" cy="6" r="1.8" fill="currentColor"/><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/><circle cx="6" cy="18" r="1.8" fill="currentColor"/><circle cx="12" cy="18" r="1.8" fill="currentColor"/><circle cx="18" cy="18" r="1.8" fill="currentColor"/></svg>
+        <span>Keypad</span>
+      </div>
+    </nav>
+  </div>
+
+  <div id="calibrationUI" class="calibration-ui" aria-hidden="true"><div id="calText">Calibration: arrow keys to nudge, Enter save, Esc cancel.</div></div>
+
+  <!-- ========== TEMPLATE: ASTERISK SVG ========== -->
+  <template id="svg-asterisk-template">
+<!-- Paste of your asterisk SVG (exact as provided) -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="100%" viewBox="0 0 133 140" enable-background="new 0 0 133 140" xml:space="preserve">
+<path fill="#010101" opacity="1.000000" stroke="none" 
+	d="
+M74.000000,141.000000 
+	C49.333332,141.000000 25.166666,141.000000 1.000000,141.000000 
+	C1.000000,94.333336 1.000000,47.666668 1.000000,1.000000 
+	C45.333332,1.000000 89.666664,1.000000 134.000000,1.000000 
+	C134.000000,47.666668 134.000000,94.333336 134.000000,141.000000 
+	C114.166664,141.000000 94.333336,141.000000 74.000000,141.000000 
+M44.276897,59.033939 
+	C43.116108,60.731670 41.955322,62.429405 40.677589,64.298180 
+	C47.222595,67.752151 53.252327,70.934196 59.728413,74.351799 
+	C52.983017,77.867638 46.972179,81.000603 40.543381,84.351425 
+	C42.115883,86.702286 43.440659,88.682808 44.923435,90.899536 
+	C50.986198,87.275803 56.602131,83.919136 62.688408,80.281349 
+	C62.688408,87.535713 62.688408,94.054428 62.688408,100.691658 
+	C65.446571,100.691658 68.011086,100.691658 70.606415,100.691658 
+	C70.606415,94.018341 70.606415,87.654167 70.606415,80.257309 
+	C76.800713,83.959930 82.391251,87.301651 88.133949,90.734329 
+	C89.677559,88.427475 90.944099,86.534691 92.555756,84.126137 
+	C86.171661,80.846100 80.077637,77.715103 73.341248,74.254074 
+	C80.121574,70.681229 86.195503,67.480621 92.532074,64.141617 
+	C90.721741,61.797119 89.350288,60.021004 87.925392,58.175682 
+	C81.824188,61.610722 76.180618,64.788109 70.094597,68.214600 
+	C70.424538,61.056503 70.720108,54.643917 71.021568,48.103588 
+	C67.878418,48.103588 65.298492,48.103588 62.611252,48.103588 
+	C62.611252,54.837002 62.611252,61.321133 62.611252,67.815971 
+	C56.504871,64.671112 50.679153,61.670799 44.276897,59.033939 
+z"/>
+<path fill="#F1F1F1" opacity="1.000000" stroke="none" 
+	d="
+M44.565166,58.852211 
+	C50.679153,61.670799 56.504871,64.671112 62.611252,67.815971 
+	C62.611252,61.321133 62.611252,54.837002 62.611252,48.103588 
+	C65.298492,48.103588 67.878418,48.103588 71.021568,48.103588 
+	C70.720108,54.643917 70.424538,61.056503 70.094597,68.214600 
+	C76.180618,64.788109 81.824188,61.610722 87.925392,58.175682 
+	C89.350288,60.021004 90.721741,61.797119 92.532074,64.141617 
+	C86.195503,67.480621 80.121574,70.681229 73.341248,74.254074 
+	C80.077637,77.715103 86.171661,80.846100 92.555756,84.126137 
+	C90.944099,86.534691 89.677559,88.427475 88.133949,90.734329 
+	C82.391251,87.301651 76.800713,83.959930 70.606415,80.257309 
+	C70.606415,87.654167 70.606415,94.018341 70.606415,100.691658 
+	C68.011086,100.691658 65.446571,100.691658 62.688408,100.691658 
+	C62.688408,94.054428 62.688408,87.535713 62.688408,80.281349 
+	C56.602131,83.919136 50.986198,87.275803 44.923435,90.899536 
+	C43.440659,88.682808 42.115883,86.702286 40.543381,84.351425 
+	C46.972179,81.000603 52.983017,77.867638 59.728413,74.351799 
+	C53.252327,70.934196 47.222595,67.752151 40.677589,64.298180 
+	C41.955322,62.429405 43.116108,60.731670 44.565166,58.852211 
+z"/>
+</svg>
+  </template>
+
+ 
+
+  <script src="app.js"></script>
+</body>
+</html>

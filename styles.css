@@ -1,0 +1,327 @@
+
+:root{
+  --bg: #000000;
+
+  /* keypad sizing & placement */
+  --circle-size: 80px;
+  --gap-x: 20px;
+  --gap-y: 16px;
+  --overlay-offset-x: 0px;
+  --overlay-offset-y: 260px;
+
+  /* press fade duration */
+  --press-fade-ms: 300ms;
+
+  /* typography */
+  --digit-size: 36px;
+  --digit-weight: 400;
+  --letters-size: 11px;
+  --letters-color: #F7F7F7;
+  --letters-weight: 600;
+  --letters-spacing: 1.6px;
+
+  /* key colors */
+  --key-fill: #343434;
+  --key-pressed: #7c7c7c;
+
+  /* fine-tune the 0 key */
+  --zero-digit-nudge: 0px; /* nudge the '0' up/down for optical centering (negative = up) */
+  --zero-plus-gap: -2px;   /* tightened: move '+' 2px closer to the '0' */
+
+  --nav-height: 78px;
+  --nav-item-offset: 70px;
+  --nav-extra-space: max(0px, calc(var(--nav-item-offset) - 22px));
+  --nav-bottom-normal: 12px;
+}
+
+/* reset */
+*{ box-sizing: border-box; }
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display",system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* app background */
+.app{
+  position:fixed; left:0; right:0; top:0;
+  height: var(--app-viewport-height, 100svh);
+  min-height: var(--app-viewport-height, 100svh);
+  background-image: url('screenshot.png');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  overflow:hidden;
+  touch-action: manipulation;
+}
+
+/* typed-digit display */
+.display{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  font-size: var(--digit-size);
+  font-weight: var(--digit-weight);
+  line-height: 1;
+  letter-spacing: 0.2px;
+  color: #FFFFFF; /* typed numbers forced to pure white */
+  text-align:center;
+  transform: translateY(calc(var(--overlay-offset-y) - 162px));
+  width: 100%;
+  height: 48px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  opacity:0;
+  transition: opacity 140ms ease, transform 120ms ease;
+}
+
+/* keypad container */
+.keypad-wrap{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; pointer-events:none; }
+
+/* keys grid */
+.keys-grid{
+  width: calc((3 * var(--circle-size)) + (2 * var(--gap-x)));
+  margin: 0 auto;
+  margin-top: 6px;
+  display:grid;
+  grid-template-columns: repeat(3, var(--circle-size));
+  grid-template-rows: repeat(4, var(--circle-size));
+  column-gap: var(--gap-x);
+  row-gap: var(--gap-y);
+  justify-items:center;
+  align-items:center;
+  pointer-events:auto;
+  transform: translate(var(--overlay-offset-x), var(--overlay-offset-y));
+  will-change: transform;
+}
+
+/* key look */
+.key{
+  width: var(--circle-size);
+  height: var(--circle-size);
+  border-radius: 999px;
+  background-color: var(--key-fill);
+  box-shadow: none;
+  border: none !important;
+  background-clip: padding-box;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap: 0px;
+
+  cursor:pointer;
+  -webkit-tap-highlight-color: transparent;
+  pointer-events:auto;
+  user-select:none;
+
+  transition:
+    background-color var(--press-fade-ms) linear,
+    color var(--press-fade-ms) linear;
+  will-change: background-color, color;
+}
+
+/* pressed */
+.key.pressed,
+.key:active { background-color: var(--key-pressed); }
+
+/* main digit text */
+.digit{
+  display:block;
+  text-align:center;
+  font-size: var(--digit-size);
+  font-weight: var(--digit-weight);
+  color: var(--letters-color);
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  letter-spacing: 0.2px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: color var(--press-fade-ms) linear;
+}
+.key.pressed .digit,
+.key:active .digit { color: #FFFFFF; }
+
+/* letters */
+.letters{
+  font-size: var(--letters-size);
+  color: var(--letters-color);
+  letter-spacing: var(--letters-spacing);
+  text-transform: uppercase;
+  font-weight: var(--letters-weight);
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  transition: color var(--press-fade-ms) linear;
+  text-align:center;
+}
+.key .letters:empty{ height:10px; display:block; }
+.key.pressed .letters,
+.key:active .letters { color:#FFFFFF; }
+
+/* --- 0 key tweaks: center both 0 and + and tighten vertical spacing --- */
+/* ensure the 0 key stacks vertically and centers both elements exactly */
+.key[data-value="0"]{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap: 0px; /* exact control via margin on .letters */
+  padding: 0;
+}
+
+/* nudge the '0' digit so it is optically centered inside the circle */
+.key[data-value="0"] .digit{
+  transform: translateY(var(--zero-digit-nudge));
+  font-size: var(--digit-size);
+  font-weight: var(--digit-weight);
+  margin: 0;
+  padding: 0;
+}
+
+/* '+' styling: balanced weight and tightened gap */
+.key[data-value="0"] .letters{
+  display:block;
+  font-weight: 700;            /* balanced weight */
+  font-size: 15px;             /* kept as requested */
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--letters-color);
+  margin-top: var(--zero-plus-gap); /* tightened by 2px (negative) */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: color var(--press-fade-ms) linear;
+}
+
+/* injected svg sizing for asterisk & hash so they match font-size */
+/* ASTERISK */
+.digit.digit-asterisk svg {
+  width: 1em !important;
+  height: 1em !important;
+  display:block !important;
+  vertical-align: middle !important;
+  transform-origin: 50% 50% !important;
+  transform: scale(1.60) translateY(3px) !important;
+  color: currentColor;
+}
+
+/* HASH tuning */
+.digit.digit-hash svg {
+  width: 1em !important;
+  height: 1em !important;
+  display:block !important;
+  vertical-align: middle !important;
+  transform-origin: 50% 50% !important;
+  transform: scale(0.95) translateY(0) !important;
+  color: currentColor;
+}
+
+/* ensure injected svg shapes adopt currentColor and remove strokes */
+.digit.digit-asterisk svg * ,
+.digit.digit-hash svg * {
+  fill: currentColor !important;
+  stroke: none !important;
+}
+
+/* hide possible background rects or bg elements defensively */
+.digit.digit-asterisk svg rect,
+.digit.digit-hash svg rect,
+.digit.digit-asterisk svg [id*="bg"],
+.digit.digit-hash svg [id*="bg"],
+.digit.digit-asterisk svg [class*="bg"],
+.digit.digit-hash svg [class*="bg"] {
+  display: none !important;
+  fill: none !important;
+  opacity: 0 !important;
+}
+
+/* fallback font sizing without template */
+.key[data-value="*"] .digit{ font-size: calc(var(--digit-size) * 0.84); }
+.key[data-value="#"] .digit{ font-size: calc(var(--digit-size) * 0.86); }
+
+/* call button (kept visible if present) */
+.call-row{
+  width: calc((3 * var(--circle-size)) + (2 * var(--gap-x)));
+  margin: 0 auto;
+  margin-top: 10px;
+  display:flex;
+  justify-content:center;
+  pointer-events:none;
+  position: relative;
+  transform: translate(var(--overlay-offset-x), calc(var(--overlay-offset-y) + 360px));
+}
+.call-button{
+  width:68px;
+  height:68px;
+  border-radius:999px;
+  background:#2fd55b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 12px 26px rgba(0,0,0,0.28);
+  border:none;
+  cursor:pointer;
+  transition: transform 120ms ease;
+  pointer-events:auto;
+  transform: translateY(-14px);
+  z-index: 40;
+}
+.call-button svg{ width:36px; height:36px; fill:#fff; }
+
+/* bottom nav */
+.bottom-nav{
+  position: fixed;
+  left:0; right:0; bottom: 0;
+  height: calc(var(--nav-height) + var(--nav-extra-space) + var(--nav-bottom-normal) + env(safe-area-inset-bottom));
+  display:flex;
+  justify-content: space-around;
+  align-items:flex-end;
+  padding-bottom: calc(env(safe-area-inset-bottom, 12px) + 6px);
+  background: linear-gradient(180deg, rgba(0,0,0,1), rgba(0,0,0,1));
+  pointer-events:auto;
+  z-index: 20;
+  box-shadow: 0 -6px 18px rgba(0,0,0,0.25) inset;
+  transform: translate(var(--overlay-offset-x), calc(var(--overlay-offset-y) + 900px));
+}
+.nav-item{ display:flex; flex-direction:column; align-items:center; gap:5px; font-size:12px; color:#9b9b9b; pointer-events:auto; position: relative; top: var(--nav-item-offset); transition: top 180ms ease; z-index: 30; }
+.nav-item svg{ width:26px; height:26px; fill: currentColor; display:block; }
+.nav-item span{ font-size:11px; color:inherit; margin-top:2px; }
+.nav-item.active{ color:#0a84ff; }
+
+/* accessibility outlines */
+.key:focus, .nav-item:focus, #callBtn:focus { outline: 2px solid rgba(255,255,255,0.06); outline-offset:4px; }
+
+/* reduced motion fallback */
+@media (prefers-reduced-motion: reduce){
+  .key, .call-button, .nav-item{ transition:none; transform:none; top:0; }
+}
+
+/* small screens adjustments */
+@media (max-width:360px){
+  :root{
+    --circle-size:68px;
+    --gap-x:14px;
+    --gap-y:12px;
+    --overlay-offset-y: 240px;
+    --digit-size: 28px;
+    --letters-size: 11px;
+    --nav-item-offset: 26px;
+    --letters-spacing: 1.2px;
+    --zero-digit-nudge: 0px;
+    --zero-plus-gap: -2px;
+  }
+  .display{ transform: translateY(calc(var(--overlay-offset-y) - 148px)); font-size: var(--digit-size); }
+  .digit.digit-asterisk svg { transform: scale(1.10) translateY(0) !important; }
+  .digit.digit-hash svg { transform: scale(0.92) translateY(0) !important; }
+  .key[data-value="0"] .letters { font-size: 14px; margin-top: -2px; }
+}
